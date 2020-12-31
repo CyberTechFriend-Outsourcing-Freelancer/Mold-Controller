@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+  > Mode default : Manual<br>
+  <!-- mode selection -->
+  <label class="container" onclick="mode=true;">Auto
+    <input type="radio" name="radio">
+    <span class="checkmark"></span>
+  </label><br>
+  <label class="container" onclick="mode=false;">Manual
+    <input type="radio" checked="checked" name="radio">
+    <span class="checkmark"></span>
+  </label><br><br>
+
+  <!-- insert delay, runtime -->
+  > FLOW<br>
+  delay : <input type="number" id="flow_delay"><br>
+  runtime : <input type="number" id="flow_runtime" ><br>
+  <button onclick="main('Flow');">실행</button><br><br>
+
+  <!-- insert delay, runtime -->
+  > BYPASS<br>
+  delay : <input type="number" id="bypass_delay"><br>
+  runtime : <input type="number" id="bypass_runtime" ><br>
+  <button onclick="main('bypass');">실행</button><br><br>
+
+  <!-- insert delay, runtime -->
+  > PURGE<br>
+  delay : <input type="number" id="purge_delay"><br>
+  runtime : <input type="number" id="purge_runtime" ><br>
+  <button onclick="main('purge');">실행</button><br><br>
+
+  <br><br>
+  <!-- signal button -->
+  <button onclick="main();">자동</button><br><br>
+  > GPIO<br>
+  <!-- show flow GPIO -->
+  flow : <span id="flow"></span><br>
+
+  <!-- show bypass GPIO -->
+  bypass : <span id="bypass"></span><br>
+
+  <!-- show purge GPIO -->
+  purge : <span id="purge"></span><br>
+
+
+  <script>
+    var mode = false;
+    var command;
+
+    function main(command){
+      if(mode){
+        auto();
+      } else{
+        manual(command);
+      }
+    }
+    //GPIO 송신   document.getElementById("flow").innerHTML = 1;
+    //입력값 받기 document.getElementById("flow_delay").value
+    function auto(){
+      console.log("auto");
+      setTimeout(()=>{
+        document.getElementById("flow").innerHTML = 1;
+        setTimeout(()=>{
+          document.getElementById("flow").innerHTML = 0;
+          setTimeout(()=>{
+            document.getElementById("bypass").innerHTML = 1;
+            setTimeout(()=>{
+              document.getElementById("bypass").innerHTML = 0;
+              setTimeout(()=>{
+                document.getElementById("purge").innerHTML = 1;
+                setTimeout(()=>{
+                  document.getElementById("purge").innerHTML = 0;
+                },document.getElementById("purge_runtime").value*1000);
+              },document.getElementById("purge_delay").value*1000);
+            },document.getElementById("bypass_runtime").value*1000);
+          },document.getElementById("bypass_delay").value*1000);
+        },document.getElementById("flow_runtime").value*1000);
+      },document.getElementById("flow_delay").value*1000);
+    }
+    
+    function manual(command){
+      console.log("manual");
+      if(command == "Flow"){
+        setTimeout(()=>{
+          document.getElementById("flow").innerHTML = 1;
+          setTimeout(()=>{
+            document.getElementById("flow").innerHTML = 0;
+          },document.getElementById("flow_runtime").value*1000);
+        },document.getElementById("flow_delay").value*1000);
+      }
+
+      if(command == "bypass"){
+        setTimeout(()=>{
+          document.getElementById("bypass").innerHTML = 1;
+          setTimeout(()=>{
+            document.getElementById("bypass").innerHTML = 0;
+          },document.getElementById("bypass_runtime").value*1000);
+        },document.getElementById("bypass_delay").value*1000);
+      }
+
+      if(command == "purge"){
+        setTimeout(()=>{
+          document.getElementById("purge").innerHTML = 1;
+          setTimeout(()=>{
+            document.getElementById("purge").innerHTML = 0;
+          },document.getElementById("purge_runtime").value*1000);
+        },document.getElementById("purge_delay").value*1000);
+      }
+    }
+  </script>
+</body>
+</html>
