@@ -21,57 +21,73 @@
     > FLOW<br>
     delay : <input type="number" id="flow_delay"><br>
     runtime : <input type="number" id="flow_runtime" ><br>
-    <button onclick="main('Flow');">실행</button><br><br>
+    <button id="manual_flow">실행</button><br><br>
 
     <!-- insert delay, runtime -->
     > BYPASS<br>
     delay : <input type="number" id="bypass_delay"><br>
     runtime : <input type="number" id="bypass_runtime" ><br>
-    <button onclick="main('bypass');">실행</button><br><br>
+    <button id="manual_bypass">실행</button><br><br>
 
     <!-- insert delay, runtime -->
     > PURGE<br>
     delay : <input type="number" id="purge_delay"><br>
     runtime : <input type="number" id="purge_runtime" ><br>
-    <button onclick="main('purge');">실행</button><br><br>
+    <button id="manual_purge">실행</button><br><br>
 
     <br><br>
     <!-- signal button -->
     <button id="auto_begin">자동</button><br><br>
     > GPIO<br>
     <!-- show flow GPIO -->
-    flow : <span id="flow"></span><br>
+    flow : <span id="flow">0</span><br>
 
     <!-- show bypass GPIO -->
-    bypass : <span id="bypass"></span><br>
+    bypass : <span id="bypass">0</span><br>
 
     <!-- show purge GPIO -->
-    purge : <span id="purge"></span><br>
+    purge : <span id="purge">0</span><br>
     <script>
       var socket = io();
 
       //auto_begin event  
       var auto_begin = document.getElementById("auto_begin");
-      auto_begin.addEventListener("change", function() {
-        auto_begin.onclick=()=>{socket.emit("auto_begin", true);}
+      auto_begin.addEventListener("click", function() {
+        socket.emit("begin", true);
+      });
+      //----------------------------------------------------------
+      //manual_flow event  
+      var manual_flow = document.getElementById("manual_flow");
+      manual_flow.addEventListener("click", function() {
+        socket.emit("begin", "flow");
       });
 
+      //manual_bypass event  
+      var manual_bypass = document.getElementById("manual_bypass");
+      manual_bypass.addEventListener("click", function() {
+        socket.emit("begin", "bypass");
+      });
+
+      //manual_purge event  
+      var manual_purge = document.getElementById("manual_purge");
+      manual_purge.addEventListener("click", function() {
+        socket.emit("begin", "purge");
+      });
+      //----------------------------------------------------------
       //Mode event  
       var auto = document.getElementById("auto");
       auto.addEventListener("change", function() {
-        var mode = Number(this.checked);
-        if(mode){
+        if(this.checked){
           socket.emit("mode", 1);
         }
       });
       var manual = document.getElementById("manual");
       manual.addEventListener("change", function() {
-        var mode = Number(this.checked);
-        if(mode){
+        if(this.checked){
           socket.emit("mode", 0);
         }
       });
-
+      //----------------------------------------------------------
       //flow event
       var flow_delay = document.getElementById("flow_delay");
       flow_delay.addEventListener("change", function() {
@@ -101,8 +117,17 @@
       purge_runtime.addEventListener("change", function() {
         socket.emit("purge_runtime", purge_runtime.value);
       });
-
-      
+      //----------------------------------------------------------
+      //input time
+      socket.on("flow",function(data){
+        document.getElementById("flow").innerText=data;
+      });
+      socket.on("bypass",function(data){
+        document.getElementById("bypass").innerText=data;
+      });
+      socket.on("purge",function(data){
+        document.getElementById("purge").innerText=data;
+      });
     </script>
   </body>
 </html>
