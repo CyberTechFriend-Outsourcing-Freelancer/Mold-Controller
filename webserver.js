@@ -20,11 +20,79 @@ function handler (req, res) {
     return res.end();
   });
 }
-
+var auto_begin;
+var mode;
+var flow_delay;
+var flow_runtime;
+var bypass_delay;
+var bypass_runtime;
+var purge_delay;
+var purge_runtime;
 io.sockets.on('connection', function (socket){
-  var signal = false;
+  //auto_begin
+  socket.on("auto_begin",function(data){
+    auto_begin = data;
+    if(auto_begin){
+      main();
+    }
+  });
+  //mode
   socket.on("mode",function(data){
-    signal = data;
-    console.log("signal : "+signal);
+    mode = data;
+  });
+  //flow
+  socket.on("flow_delay",function(data){
+    flow_delay = data;
+  });
+  socket.on("flow_runtime",function(data){
+    flow_runtime = data;
+  });
+  //bypass
+  socket.on("bypass_delay",function(data){
+    bypass_delay = data;
+  });
+  socket.on("bypass_runtime",function(data){
+    bypass_runtime = data;
+  });
+  //purge
+  socket.on("purge_delay",function(data){
+    purge_delay = data;
+  });
+  socket.on("purge_runtime",function(data){
+    purge_runtime = data;
   });
 });
+
+function main(){
+  if(mode){
+    auto();
+  } else{
+    manual();
+  }
+}
+
+function auto(){
+  console.log("auto");
+  setTimeout(()=>{
+    //flowGPIO.writeSync(1);
+    setTimeout(()=>{
+      //flowGPIO.writeSync(0);
+      setTimeout(()=>{
+        //bypassGPIO.writeSync(1);
+        setTimeout(()=>{
+          //bypassGPIO.writeSync(1);
+          setTimeout(()=>{
+            //purgeGPIO.writeSync(1);
+            setTimeout(()=>{
+              //purgeGPIO.writeSync(0);
+            },document.getElementById("purge_runtime").value*1000);
+          },document.getElementById("purge_delay").value*1000);
+        },document.getElementById("bypass_runtime").value*1000);
+      },document.getElementById("bypass_delay").value*1000);
+    },document.getElementById("flow_runtime").value*1000);
+  },document.getElementById("flow_delay").value*1000);
+}
+
+function manual(){
+
+}

@@ -17,28 +17,92 @@
       <span class="checkmark"></span>
     </label><br><br>
 
+    <!-- insert delay, runtime -->
+    > FLOW<br>
+    delay : <input type="number" id="flow_delay"><br>
+    runtime : <input type="number" id="flow_runtime" ><br>
+    <button onclick="main('Flow');">실행</button><br><br>
+
+    <!-- insert delay, runtime -->
+    > BYPASS<br>
+    delay : <input type="number" id="bypass_delay"><br>
+    runtime : <input type="number" id="bypass_runtime" ><br>
+    <button onclick="main('bypass');">실행</button><br><br>
+
+    <!-- insert delay, runtime -->
+    > PURGE<br>
+    delay : <input type="number" id="purge_delay"><br>
+    runtime : <input type="number" id="purge_runtime" ><br>
+    <button onclick="main('purge');">실행</button><br><br>
+
+    <br><br>
+    <!-- signal button -->
+    <button id="auto_begin">자동</button><br><br>
+    > GPIO<br>
+    <!-- show flow GPIO -->
+    flow : <span id="flow"></span><br>
+
+    <!-- show bypass GPIO -->
+    bypass : <span id="bypass"></span><br>
+
+    <!-- show purge GPIO -->
+    purge : <span id="purge"></span><br>
     <script>
       var socket = io();
-      window.addEventListener("load", function(){
-        var auto = document.getElementById("auto");
-        auto.addEventListener("change", function() {
-          var mode = Number(this.checked);
-          if(mode){
-            socket.emit("mode", 1);
-            console.log("auto : "+mode);
-          }
-        });
+
+      //auto_begin event  
+      var auto_begin = document.getElementById("auto_begin");
+      auto_begin.addEventListener("change", function() {
+        auto_begin.onclick=()=>{socket.emit("auto_begin", true);}
       });
-      window.addEventListener("load", function()
-        var manual = document.getElementById("manual");
-        manual.addEventListener("change", function() {
-          var mode = Number(this.checked);
-          if(mode){
-            socket.emit("mode", 0);
-            console.log("manual : "+mode);
-          }
-        });
+
+      //Mode event  
+      var auto = document.getElementById("auto");
+      auto.addEventListener("change", function() {
+        var mode = Number(this.checked);
+        if(mode){
+          socket.emit("mode", 1);
+        }
       });
+      var manual = document.getElementById("manual");
+      manual.addEventListener("change", function() {
+        var mode = Number(this.checked);
+        if(mode){
+          socket.emit("mode", 0);
+        }
+      });
+
+      //flow event
+      var flow_delay = document.getElementById("flow_delay");
+      flow_delay.addEventListener("change", function() {
+        socket.emit("flow_delay", flow_delay.value);
+      });
+      var flow_runtime = document.getElementById("flow_runtime");
+      flow_runtime.addEventListener("change", function() {
+        socket.emit("flow_runtime", flow_runtime.value);
+      });
+
+      //bypass event
+      var bypass_delay = document.getElementById("bypass_delay");
+      bypass_delay.addEventListener("change", function() {
+        socket.emit("bypass_delay", bypass_delay.value);
+      });
+      var bypass_runtime = document.getElementById("bypass_runtime");
+      bypass_runtime.addEventListener("change", function() {
+        socket.emit("bypass_runtime", bypass_runtime.value);
+      });
+
+      //purge event
+      var purge_delay = document.getElementById("purge_delay");
+      purge_delay.addEventListener("change", function() {
+        socket.emit("purge_delay", purge_delay.value);
+      });
+      var purge_runtime = document.getElementById("purge_runtime");
+      purge_runtime.addEventListener("change", function() {
+        socket.emit("purge_runtime", purge_runtime.value);
+      });
+
+      
     </script>
   </body>
 </html>
