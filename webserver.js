@@ -20,13 +20,13 @@ function handler (req, res) {
     return res.end();
   });
 }
-var mode;
-var flow_delay;
-var flow_runtime;
-var bypass_delay;
-var bypass_runtime;
-var purge_delay;
-var purge_runtime;
+var mode = false;
+var flow_delay = 0;
+var flow_runtime = 0;
+var bypass_delay = 0;
+var bypass_runtime = 0;
+var purge_delay = 0;
+var purge_runtime = 0;
 var global_socket;
 io.sockets.on('connection', function (socket){
   global_socket = socket;
