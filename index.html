@@ -34,6 +34,7 @@
     delay : <input type="number" id="purge_delay"><br>
     runtime : <input type="number" id="purge_runtime" ><br>
     <button id="manual_purge">실행</button><br><br>
+    error : <span id="error"></span><br>
 
     <br><br>
     <!-- signal button -->
@@ -53,7 +54,7 @@
       //auto_begin event  
       var auto_begin = document.getElementById("auto_begin");
       auto_begin.addEventListener("click", function() {
-        socket.emit("begin", true);
+        socket.emit("begin", "auto");
       });
       //----------------------------------------------------------
       //manual_flow event  
@@ -118,7 +119,7 @@
         socket.emit("purge_runtime", purge_runtime.value);
       });
       //----------------------------------------------------------
-      //input time
+      //process time
       socket.on("flow",function(data){
         document.getElementById("flow").innerText=data;
       });
@@ -128,6 +129,10 @@
       socket.on("purge",function(data){
         document.getElementById("purge").innerText=data;
       });
+
+      socket.on("error",function(data){
+        document.getElementById("error").innerText=data;
+      })
     </script>
   </body>
 </html>

@@ -20,8 +20,6 @@ function handler (req, res) {
     return res.end();
   });
 }
-var manual_begin;
-var command;
 var mode;
 var flow_delay;
 var flow_runtime;
@@ -34,7 +32,7 @@ io.sockets.on('connection', function (socket){
   global_socket = socket;
   //begin
   socket.on("begin",function(data){
-    main();
+    main(data);
   });
   //----------------------------------------------------------
   //mode
@@ -65,11 +63,17 @@ io.sockets.on('connection', function (socket){
   });
 });
 
-function main(){
-  if(mode){
+function main(com){
+  if(mode && com=="auto"){
+    global_socket.emit("error","none");
     auto();
-  } else{
-    manual();
+  } else if(!mode && com!="auto"){
+    global_socket.emit("error","none");
+    manual(com);
+  } else if(mode && com!="auto"){
+    global_socket.emit("error","please change mode to manual");
+  } else if(!mode && com=="auto"){
+    global_socket.emit("error","please change mode to auto");
   }
 }
 
@@ -77,22 +81,16 @@ function auto(){
   console.log("auto");
   setTimeout(()=>{
     global_socket.emit("flow",1);
-    //flowGPIO.writeSync(1);
     setTimeout(()=>{
       global_socket.emit("flow",0);
-      //flowGPIO.writeSync(0);
       setTimeout(()=>{
         global_socket.emit("bypass",1);
-        //bypassGPIO.writeSync(1);
         setTimeout(()=>{
           global_socket.emit("bypass",0);
-          //bypassGPIO.writeSync(0);
           setTimeout(()=>{
             global_socket.emit("purge",1);
-            //purgeGPIO.writeSync(1);
             setTimeout(()=>{
               global_socket.emit("purge",0);
-              //purgeGPIO.writeSync(0);
             },purge_runtime*1000);
           },purge_delay*1000);
         },bypass_runtime*1000);
