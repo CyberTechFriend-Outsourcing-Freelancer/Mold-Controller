@@ -8,12 +8,12 @@
   <body>
     > Mode default : Manual<br>
     <!-- mode selection -->
-    <label class="container">Auto
-      <input type="radio" name="radio" id="auto">
+    <label class="container">
+      Auto<input type="radio" name="radio" id="auto">
       <span class="checkmark"></span>
     </label><br>
-    <label class="container">Manual
-      <input type="radio" checked="checked" name="radio" id="manual">
+    <label class="container">
+      Manual<input type="radio" checked="checked" name="radio" id="manual">
       <span class="checkmark"></span>
     </label><br><br>
 
@@ -56,7 +56,7 @@
       auto_begin.addEventListener("click", function() {
         socket.emit("begin", "auto");
       });
-      //----------------------------------------------------------
+
       //manual_flow event  
       var manual_flow = document.getElementById("manual_flow");
       manual_flow.addEventListener("click", function() {
@@ -74,7 +74,7 @@
       manual_purge.addEventListener("click", function() {
         socket.emit("begin", "purge");
       });
-      //----------------------------------------------------------
+
       //Mode event  
       var auto = document.getElementById("auto");
       auto.addEventListener("change", function() {
@@ -88,7 +88,7 @@
           socket.emit("mode", 0);
         }
       });
-      //----------------------------------------------------------
+
       //flow event
       var flow_delay = document.getElementById("flow_delay");
       flow_delay.addEventListener("change", function() {
@@ -118,7 +118,7 @@
       purge_runtime.addEventListener("change", function() {
         socket.emit("purge_runtime", purge_runtime.value);
       });
-      //----------------------------------------------------------
+
       //process time
       socket.on("flow",function(data){
         document.getElementById("flow").innerText=data;
