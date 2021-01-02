@@ -100,9 +100,11 @@ function give_error_status(msg){
 
 //check any of timer_setting is 0;
 function validate_timer_setting(){
-  for(let key in timer_setting){
-    if(timer_setting[key]==0){
-      return 1;
+  for(let key1 in timer_setting){
+    for(let key2 in timer_setting[key1]){
+      if(timer_setting[key1][key2]==0){
+          return 1;
+      }
     }
   }
 }
@@ -122,7 +124,7 @@ function main(com){
 }
 
 function auto(){
-  give_error_status("error","none");
+  give_error_status("none");
   console.log("auto");
   setTimeout(()=>{
     control_GPIO_flow(1);
@@ -145,7 +147,7 @@ function auto(){
 }
 
 function manual(command){
-  give_error_status("error","none");
+  give_error_status("none");
   console.log("manual : "+command);
   if(command == "flow"){
     setTimeout(()=>{
