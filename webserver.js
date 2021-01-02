@@ -1,6 +1,7 @@
 var http = require('http').createServer(handler);
 var fs = require('fs');
 var io = require('socket.io')(http)
+var Gpio = require('onoff').Gpio
 console.log('start2');
 http.listen(8080);
 
@@ -20,7 +21,8 @@ function handler (req, res) {
     return res.end();
   });
 }
-var mode = false;
+
+var mode = 0;
 var flow_delay = 0;
 var flow_runtime = 0;
 var bypass_delay = 0;
@@ -28,6 +30,9 @@ var bypass_runtime = 0;
 var purge_delay = 0;
 var purge_runtime = 0;
 var global_socket;
+const FLOW_GPIO_PORT = 1;
+const BYPASS_GPIO_PORT = 2;
+const PURGE_GPIO_PORT = 3;
 io.sockets.on('connection', function (socket){
   global_socket = socket;
   //begin
@@ -80,17 +85,17 @@ function main(com){
 function auto(){
   console.log("auto");
   setTimeout(()=>{
-    global_socket.emit("flow",1);
+    control_GPIO_flow(1);
     setTimeout(()=>{
-      global_socket.emit("flow",0);
+      control_GPIO_flow(0);
       setTimeout(()=>{
-        global_socket.emit("bypass",1);
+        control_GPIO_bypass(1);
         setTimeout(()=>{
-          global_socket.emit("bypass",0);
+          control_GPIO_bypass(0);
           setTimeout(()=>{
-            global_socket.emit("purge",1);
+            control_GPIO_purge(1);
             setTimeout(()=>{
-              global_socket.emit("purge",0);
+              control_GPIO_purge(0);
             },purge_runtime*1000);
           },purge_delay*1000);
         },bypass_runtime*1000);
@@ -100,31 +105,53 @@ function auto(){
 }
 
 function manual(command){
-  console.log("manual");
+  console.log("manual : "+command);
   if(command == "flow"){
     setTimeout(()=>{
-      global_socket.emit("flow", 1);
+      control_GPIO_flow(1);
       setTimeout(()=>{
-        global_socket.emit("flow", 0);
+        control_GPIO_flow(0);
       },flow_runtime*1000);
     },flow_delay*1000);
   }
 
   if(command == "bypass"){
     setTimeout(()=>{
-      global_socket.emit("bypass", 1);
+      control_GPIO_bypass(1);
       setTimeout(()=>{
-        global_socket.emit("bypass", 0);
+        control_GPIO_bypass(0);
       },bypass_runtime*1000);
     },bypass_delay*1000);
   }
 
   if(command == "purge"){
     setTimeout(()=>{
-      global_socket.emit("purge", 1);
+      control_GPIO_purge(1);
       setTimeout(()=>{
-        global_socket.emit("purge", 0);
+        control_GPIO_purge(0);
       },purge_runtime*1000);
     },purge_delay*1000);
   }
+}
+
+//control GPIO
+function control_GPIO_flow(sign){
+  let GPIO_flow = new Gpio(FLOW_GPIO_PORT, 'out');
+  GPIO_flow.writeSync(sign);
+  give_status("flow",sign);
+}
+function control_GPIO_bypass(sign){
+  var GPIO_bypass = new Gpio(BYPASS_GPIO_PORT, 'out');
+  GPIO_bypass.writeSync(sign);
+  give_status("bypass",sign);
+}
+function control_GPIO_purge(sign){
+  var GPIO_purge = new Gpio(PURGE_GPIO_PORT, 'out');
+  GPIO_purge.writeSync(sign);
+  give_status("purge",sign);
+}
+
+//GPIO status to front
+function give_status(process,sign){
+  global_socket.emit(process,sign);
 }
