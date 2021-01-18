@@ -18,13 +18,13 @@ if(mode=="auto"){
 }
 
 function auto(){
-  var timer1 = setTimeout(()=>{
+  setTimeout(()=>{
     node.send({"topic":"1ch_flow", "payload":SW_on});
-    var timer2 = setTimeout(()=>{
+    setTimeout(()=>{
       node.send({"topic":"1ch_flow", "payload":SW_off});
-      var timer3 = setTimeout(()=>{
+      setTimeout(()=>{
         node.send({"topic":"1ch_bypass", "payload":SW_on});
-        var timer4 = setTimeout(()=>{
+        setTimeout(()=>{
           node.send({"topic":"1ch_bypass", "payload":SW_off});
         },Bypass.runtime*1000);
       },Bypass.delay*1000);
@@ -35,9 +35,9 @@ function auto(){
 function manual(){
   //Flow
   if(msg.topic == "action_1ch_flow"){
-    var timer5 = setTimeout(()=>{
+    setTimeout(()=>{
       node.send({"topic":"1ch_flow", "payload":SW_on});
-      var timer6 = setTimeout(()=>{
+      setTimeout(()=>{
         node.send({"topic":"1ch_flow", "payload":SW_off});
       },Flow.runtime*1000);
     },Flow.delay*1000);
@@ -45,9 +45,9 @@ function manual(){
 
   //Bypass
   if(msg.topic == "action_1ch_bypass"){
-    var timer7 = setTimeout(()=>{
+    setTimeout(()=>{
       node.send({"topic":"1ch_bypass", "payload":SW_on});
-      var timer8 = setTimeout(()=>{
+      setTimeout(()=>{
         node.send({"topic":"1ch_bypass", "payload":SW_off});
       },Bypass.runtime*1000);
     },Bypass.delay*1000);
@@ -55,9 +55,9 @@ function manual(){
 
   //Purge
   if(msg.topic == "action_1ch_purge"){
-    var timer9 = setTimeout(()=>{
+    setTimeout(()=>{
       node.send({"topic":"1ch_purge", "payload":SW_on});
-      var timer10 = setTimeout(()=>{
+      setTimeout(()=>{
         node.send({"topic":"1ch_purge", "payload":SW_off});
       },Purge.runtime*1000);
     },Purge.delay*1000);
@@ -65,9 +65,9 @@ function manual(){
 
   //Reverse - Purge와 switch 반대
   if(msg.topic == "action_1ch_reverse"){
-    var timer11 = setTimeout(()=>{
+    setTimeout(()=>{
       node.send({"topic":"1ch_purge", "payload":SW_off});
-      var timer12 = setTimeout(()=>{
+      setTimeout(()=>{
         node.send({"topic":"1ch_purge", "payload":SW_on});
       },Purge.runtime*1000);
     },Purge.delay*1000);
